@@ -1,0 +1,19 @@
+{
+  "name": "SABLOX",
+  "short_name": "SABLOX",
+  "description": "2D арена SABLOX",
+  "start_url": "/arena.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#101827",
+  "theme_color": "#111827",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
