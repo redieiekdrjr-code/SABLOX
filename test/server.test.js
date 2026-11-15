@@ -45,7 +45,7 @@ after(() => {
 
 test('arena browser script has valid JavaScript syntax', () => {
   const html = fs.readFileSync('arena.html', 'utf8');
-  const scripts = [...html.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)];
+  const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
   assert.ok(scripts.length, 'arena script exists');
   assert.doesNotThrow(() => new vm.Script(scripts[scripts.length - 1][1]));
 });
