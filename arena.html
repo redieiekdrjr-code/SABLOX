@@ -38,7 +38,8 @@ const $=id=>document.getElementById(id);
 let running=false,last=0,elapsed=0,score=0,player,foes=[],shots=[],particles=[],keys={},aim={x:700,y:270},mouseDown=false,fireHeld=false,joystick={x:0,y:0},spawnClock=0;
 let socket=null,myId=null,remotePlayers=new Map(),lastNet=0,netReady=false;
 const walls=[{x:270,y:100,w:105,h:58},{x:580,y:100,w:105,h:58},{x:270,y:382,w:105,h:58},{x:580,y:382,w:105,h:58},{x:440,y:205,w:80,h:130}];
-const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);\nconst heroes={ranger:{speed:220,damage:22,fireRate:.24,bulletSpeed:470},vanguard:{speed:185,damage:32,fireRate:.42,bulletSpeed:420},runner:{speed:275,damage:14,fireRate:.16,bulletSpeed:500}};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const heroes={ranger:{speed:220,damage:22,fireRate:.24,bulletSpeed:470},vanguard:{speed:185,damage:32,fireRate:.42,bulletSpeed:420},runner:{speed:275,damage:14,fireRate:.16,bulletSpeed:500}};
 function circleRect(x,y,r,b){let px=clamp(x,b.x,b.x+b.w),py=clamp(y,b.y,b.y+b.h);return (x-px)**2+(y-py)**2<r*r}
 function blocked(x,y,r){return x<r+18||x>W-r-18||y<r+18||y>H-r-18||walls.some(b=>circleRect(x,y,r,b))}
 function move(o,dx,dy){let nx=o.x+dx,ny=o.y;if(!blocked(nx,ny,o.r))o.x=nx;ny=o.y+dy;if(!blocked(o.x,ny,o.r))o.y=ny}
