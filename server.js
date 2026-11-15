@@ -14,7 +14,7 @@ const server = http.createServer((req,res) => {
   const url = new URL(req.url, 'http://localhost');
   if (url.pathname === '/api/health') {
     res.writeHead(200, {'Content-Type':'application/json','Cache-Control':'no-store'});
-    return res.end(JSON.stringify({status:'ok',service:'SABLOX',version:'0.2.0',online:clients.size,rooms:rooms.size}));
+    return res.end(JSON.stringify({status:'ok',service:'SABLOX',version:'0.3.0',online:clients.size,rooms:rooms.size}));
   }
   if (url.pathname === '/api/games') {
     res.writeHead(200, {'Content-Type':'application/json','Cache-Control':'no-store'});
