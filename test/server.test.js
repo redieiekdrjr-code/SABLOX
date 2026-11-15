@@ -1,5 +1,7 @@
 const { test, before, after } = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const vm = require('node:vm');
 const { spawn } = require('node:child_process');
 const WebSocket = require('ws');
 
@@ -39,6 +41,13 @@ before(async () => {
 
 after(() => {
   if (child && !child.killed) child.kill('SIGTERM');
+});
+
+test('arena browser script has valid JavaScript syntax', () => {
+  const html = fs.readFileSync('arena.html', 'utf8');
+  const scripts = [...html.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)];
+  assert.ok(scripts.length, 'arena script exists');
+  assert.doesNotThrow(() => new vm.Script(scripts[scripts.length - 1][1]));
 });
 
 test('health endpoint reports the running service', async () => {
