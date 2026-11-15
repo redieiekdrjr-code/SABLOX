@@ -20,7 +20,7 @@ button{border:0;border-radius:11px;padding:13px 20px;background:#58c8f2;color:#0
 .hint{font-size:12px;color:#9fb1c9;text-align:center;flex:1}
 #stick{width:88px;height:88px;border-radius:50%;background:#ffffff13;border:2px solid #ffffff35;position:relative;flex:none}
 #nub{width:36px;height:36px;border-radius:50%;background:#9ddfff;box-shadow:0 3px 12px #0007;position:absolute;left:24px;top:24px}
-#fire,#dash{width:88px;height:88px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffbd74,#f05d62);color:#32100d;border:4px solid #ffffff65;box-shadow:0 5px 20px #0007;flex:none}
+#fire,#dash{width:88px;height:88px;border-radius:50%;border:4px solid #ffffff65;box-shadow:0 5px 20px #0007;flex:none}#fire{background:radial-gradient(circle at 35% 30%,#ffbd74,#f05d62);color:#32100d}#dash{background:radial-gradient(circle at 35% 30%,#b9a2ff,#7554d8);color:#160d36;font-size:12px}
 @media(hover:hover) and (pointer:fine){#controls{height:54px}.hint{font-size:13px}#stick,#fire,#dash{display:none}}
 @media(max-width:560px){header{height:50px;padding:0 10px}#hud{gap:5px;font-size:11px}.pill{padding:6px 7px}#stage{padding:5px}#overlay{inset:5px}#controls{height:106px;padding:0 18px}.hint{font-size:10px}}
 </style>
@@ -35,7 +35,7 @@ button{border:0;border-radius:11px;padding:13px 20px;background:#58c8f2;color:#0
 (()=>{
 const c=document.getElementById('game'),ctx=c.getContext('2d'),W=960,H=540;
 const $=id=>document.getElementById(id);
-let running=false,last=0,elapsed=0,score=0,player,foes=[],shots=[],particles=[],keys={},aim={x:700,y:270},mouseDown=false,fireHeld=false,joystick={x:0,y:0},spawnClock=0;
+let running=false,last=0,elapsed=0,score=0,player,foes=[],shots=[],particles=[],keys={},aim={x:700,y:270},mouseDown=false,fireHeld=false,joystick={x:0,y:0},spawnClock=0,dashQueued=false;
 let socket=null,myId=null,remotePlayers=new Map(),lastNet=0,netReady=false;
 const walls=[{x:270,y:100,w:105,h:58},{x:580,y:100,w:105,h:58},{x:270,y:382,w:105,h:58},{x:580,y:382,w:105,h:58},{x:440,y:205,w:80,h:130}];
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
