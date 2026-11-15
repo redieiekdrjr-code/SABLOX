@@ -1,24 +1,38 @@
-# SABLOX 0.1.0
+# SABLOX
 
-SABLOX is a Roblox-inspired game-platform prototype. It includes a responsive Russian-language frontend and a small Node.js server.
+SABLOX is an original browser-based 2D arena prototype with a small Node.js/WebSocket server.
+
+## Current playable build
+
+- Three selectable fighters: Ranger, Vanguard and Runner.
+- Top-down 2D arena with walls, projectiles, enemy bots, health, score and a two-minute round.
+- Keyboard/mouse controls and touch joystick, attack and dash controls.
+- Basic WebSocket room presence and player-to-player hit handling.
+- Installable PWA shell over HTTPS; on Android, open the site in Chrome and choose **Install app** / **Add to Home screen**.
 
 ## Run locally
 
+Requires Node.js 18 or newer.
+
 ```sh
+npm install
 npm start
 ```
 
-Open http://localhost:3000. The frontend checks `/api/health` every 15 seconds. If the server is unavailable, game launch remains blocked.
+Open http://localhost:3000. Health endpoint: http://localhost:3000/api/health.
+
+## Tests
+
+```sh
+npm test
+```
+
+GitHub Actions runs the test suite on pushes to `main` and pull requests.
 
 ## Deploy
 
-Deploy this repository as a Node web service:
-- Root directory: leave empty (repository root)
-- Build command: leave empty
-- Start command: `npm start`
+The repository includes a Render Blueprint in `render.yaml`. Create a Blueprint from this repository in Render. The service listens on the platform-provided `PORT` and uses `/api/health` as its health check.
 
-The service must expose its assigned `PORT`. GitHub Pages can host static files, but cannot run the Node server; use a Node service URL for the working app.
+## Honest project status
 
-## Current scope
-
-This is an early prototype, not a complete Roblox replacement. Game cards are demo content. Accounts, multiplayer, world storage, moderation, and publishing still need implementation.
+This is an early playable prototype, not a finished Brawl Stars clone. The online layer currently provides basic room presence and simple PvP hit messages; it does not yet have production-grade matchmaking, authoritative movement/combat simulation, accounts, progression, or a native Android APK. All art and game code in this repository are original prototype work.
