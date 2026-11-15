@@ -93,6 +93,7 @@ test('two players join the same room and receive state updates', async () => {
   assert.equal(first.x, 300);
   assert.equal(first.y, 200);
   assert.equal(first.hp, 100);
+  assert.equal(first.r, 18);
   assert.equal(first.score, 0);
   const hitPromise = waitForMessage(b, m => m.type === 'state' && m.players.find(p => p.id === joinedB.id)?.hp === 90);
   a.send(JSON.stringify({ type: 'hit', target: joinedB.id }));
