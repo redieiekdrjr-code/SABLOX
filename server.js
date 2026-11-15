@@ -8,6 +8,8 @@ const types = {'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/
 const clients = new Map();
 const rooms = new Map();
 let nextId = 1;
+const now = () => Date.now();
+const number = (value, fallback, min, max) => Number.isFinite(Number(value)) ? Math.max(min, Math.min(max, Number(value))) : fallback;
 const server = http.createServer((req,res) => {
   const url = new URL(req.url, 'http://localhost');
   if (url.pathname === '/api/health') {
@@ -39,7 +41,7 @@ wss.on('connection',ws=>{
   const id='p'+nextId++;const roomId='arena-'+Math.ceil(nextId/3);
   let room=[...rooms.values()].find(r=>r.players.size<2);
   if(!room){room={id:roomId,players:new Map()};rooms.set(room.id,room)}
-  const player={id,name:'Игрок '+id.slice(1),x:room.players.size?790:170,y:270,hp:100,score:0,angle:0,ws,room:room.id};
+  const player={id,name:'Игрок '+id.slice(1),x:room.players.size?790:170,y:270,hp:100,score:0,angle:0,ws,room:room.id,lastState:0,lastHit:0};
   room.players.set(id,player);clients.set(ws,player);
   send(ws,{type:'joined',id,room:room.id,players:room.players.size,capacity:2});
   broadcast(room);
@@ -48,16 +50,32 @@ wss.on('connection',ws=>{
     if(raw.length>2048)return;
     let msg;try{msg=JSON.parse(raw.toString())}catch{return}
     if(msg.type==='state'){
-      player.x=Math.max(35,Math.min(925,Number(msg.x)||player.x));
-      player.y=Math.max(35,Math.min(505,Number(msg.y)||player.y));
-      player.angle=Number.isFinite(msg.angle)?msg.angle:player.angle;
-      player.hp=Math.max(0,Math.min(100,Number(msg.hp)||0));
-      player.score=Math.max(0,Math.min(999,Number(msg.score)||0));
+      const stamp=now();
+      if(stamp-player.lastState<45)return;
+      player.lastState=stamp;
+      player.x=number(msg.x,player.x,35,925);
+      player.y=number(msg.y,player.y,35,505);
+      player.angle=number(msg.angle,player.angle,-Math.PI*2,Math.PI*2);
+      // Health and score are intentionally not accepted from movement packets.
       broadcast(room);
     }
     if(msg.type==='hit'&&typeof msg.target==='string'){
+      const stamp=now();
+      if(stamp-player.lastHit<180)return;
       const target=room.players.get(msg.target);
-      if(target&&target.id!==player.id){target.hp=Math.max(0,target.hp-10);if(target.hp===0){player.score++;target.hp=100;target.x=target.id=== [...room.players.keys()][0]?170:790;target.y=270}broadcast(room)}
+      if(!target||target.id===player.id)return;
+      // Reject implausible remote hits instead of trusting arbitrary client targets.
+      if(Math.hypot(target.x-player.x,target.y-player.y)>650)return;
+      player.lastHit=stamp;
+      target.hp=Math.max(0,target.hp-10);
+      if(target.hp===0){
+        player.score=Math.min(999,player.score+1);
+        target.hp=100;
+        target.x=[...room.players.keys()].indexOf(target.id)===0?170:790;
+        target.y=270;
+        send(target.ws,{type:'notice',text:'Ты возродился!'});
+      }
+      broadcast(room);
     }
   });
   ws.on('close',()=>remove(ws));ws.on('error',()=>remove(ws));
