@@ -29,7 +29,7 @@ const server = http.createServer((req,res) => {
     res.end(data);
   });
 });
-const wss = new WebSocketServer({server,path:'/ws'});
+const wss = new WebSocketServer({server,path:'/ws',maxPayload:2048});
 function send(ws,data){if(ws.readyState===1)ws.send(JSON.stringify(data))}
 function snapshot(room){return {type:'state',room:room.id,players:[...room.players.values()].map(p=>({id:p.id,name:p.name,x:p.x,y:p.y,hp:p.hp,score:p.score,angle:p.angle}))}}
 function broadcast(room){const data=snapshot(room);for(const p of room.players.values())send(p.ws,data)}
@@ -38,6 +38,8 @@ function remove(ws){
   const room=rooms.get(p.room);if(room){room.players.delete(p.id);for(const other of room.players.values())send(other.ws,{type:'notice',text:p.name+' покинул матч'});if(!room.players.size)rooms.delete(room.id);else broadcast(room)}
 }
 wss.on('connection',ws=>{
+  ws.isAlive=true;
+  ws.on('pong',()=>{ws.isAlive=true});
   const id='p'+nextId++;const roomId='arena-'+Math.ceil(nextId/3);
   let room=[...rooms.values()].find(r=>r.players.size<2);
   if(!room){room={id:roomId,players:new Map()};rooms.set(room.id,room)}
@@ -80,4 +82,12 @@ wss.on('connection',ws=>{
   });
   ws.on('close',()=>remove(ws));ws.on('error',()=>remove(ws));
 });
+const heartbeat=setInterval(()=>{
+  for(const ws of wss.clients){
+    if(ws.isAlive===false){remove(ws);ws.terminate();continue;}
+    ws.isAlive=false;
+    ws.ping();
+  }
+},30000);
+server.on('close',()=>clearInterval(heartbeat));
 server.listen(port,'0.0.0.0',()=>console.log('SABLOX server listening on '+port));
