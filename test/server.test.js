@@ -47,7 +47,9 @@ test('arena browser script has valid JavaScript syntax', () => {
   const html = fs.readFileSync('arena.html', 'utf8');
   const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
   assert.ok(scripts.length, 'arena script exists');
-  assert.doesNotThrow(() => new vm.Script(scripts[scripts.length - 1][1]));
+  for (const script of scripts) assert.doesNotThrow(() => new vm.Script(script[1]));
+  assert.doesNotThrow(() => new vm.Script(fs.readFileSync('sw.js', 'utf8')));
+  assert.doesNotThrow(() => JSON.parse(fs.readFileSync('manifest.webmanifest', 'utf8')));
 });
 
 test('health endpoint reports the running service', async () => {
@@ -65,6 +67,11 @@ test('game catalogue and homepage are served', async () => {
   const home = await fetch(base + '/');
   assert.equal(home.status, 200);
   assert.match(await home.text(), /SABLOX/);
+  const arena = await fetch(base + '/arena.html');
+  assert.equal(arena.status, 200);
+  assert.match(await arena.text(), /НАЧАТЬ БОЙ/);
+  const manifest = await fetch(base + '/manifest.webmanifest');
+  assert.equal(manifest.status, 200);
 });
 
 test('two players join the same room and receive state updates', async () => {
