@@ -4,7 +4,7 @@ const path = require('path');
 const { WebSocketServer } = require('ws');
 const root = __dirname;
 const port = Number(process.env.PORT || 3000);
-const types = {'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.json':'application/json'};
+const types = {'.html':'text/html; charset=utf-8','.css':'text/css','.js':'text/javascript','.json':'application/json','.webmanifest':'application/manifest+json; charset=utf-8','.svg':'image/svg+xml'};
 const clients = new Map();
 const rooms = new Map();
 let nextId = 1;
