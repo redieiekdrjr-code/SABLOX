@@ -26,7 +26,7 @@ button{border:0;border-radius:11px;padding:13px 20px;background:#58c8f2;color:#0
 </style>
 </head>
 <body><div id="app">
-<header><div><div class="brand">SABLOX <b>ARENA</b></div><div class="sub">2D • режим тренировки</div></div><div id="hud"><span class="pill">❤ <span id="hp">100</span></span><span class="pill">★ <span id="score">0</span></span><span class="pill">⏱ <span id="time">02:00</span></span></div></header>
+<header><div><div class="brand">SABLOX <b>ARENA</b></div><div class="sub" id="netstatus">2D • подключение к онлайн-арене…</div></div><div id="hud"><span class="pill">❤ <span id="hp">100</span></span><span class="pill">★ <span id="score">0</span></span><span class="pill">⏱ <span id="time">02:00</span></span></div></header>
 <main id="stage"><canvas id="game" width="960" height="540" aria-label="Игровая арена"></canvas>
 <div id="overlay"><div class="panel"><h1>SABLOX <span style="color:#76d6ff">ARENA</span></h1><p id="message">Динамичная 2D-арена. Победи ботов, уклоняйся от атак и набери 10 очков за матч.</p><button id="start">НАЧАТЬ БОЙ</button></div></div></main>
 <footer id="controls"><div id="stick"><div id="nub"></div></div><div class="hint">На ПК: WASD / стрелки — движение · мышь — прицел и выстрел · Space — выстрел</div><button id="fire">АТАКА</button></footer>
@@ -35,7 +35,7 @@ button{border:0;border-radius:11px;padding:13px 20px;background:#58c8f2;color:#0
 (()=>{
 const c=document.getElementById('game'),ctx=c.getContext('2d'),W=960,H=540;
 const $=id=>document.getElementById(id);
-let running=false,last=0,elapsed=0,score=0,player,foes=[],shots=[],particles=[],keys={},aim={x:700,y:270},mouseDown=false,fireHeld=false,joystick={x:0,y:0},spawnClock=0;
+let running=false,last=0,elapsed=0,score=0,player,foes=[],shots=[],particles=[],keys={},aim={x:700,y:270},mouseDown=false,fireHeld=false,joystick={x:0,y:0},spawnClock=0;\nlet socket=null,myId=null,remotePlayers=new Map(),lastNet=0,netReady=false;
 const walls=[{x:270,y:100,w:105,h:58},{x:580,y:100,w:105,h:58},{x:270,y:382,w:105,h:58},{x:580,y:382,w:105,h:58},{x:440,y:205,w:80,h:130}];
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 function circleRect(x,y,r,b){let px=clamp(x,b.x,b.x+b.w),py=clamp(y,b.y,b.y+b.h);return (x-px)**2+(y-py)**2<r*r}
@@ -53,7 +53,7 @@ for(let f of foes){f.cd-=dt;let d=dist(f,player),a=Math.atan2(player.y-f.y,playe
 for(let s of shots){s.x+=s.vx*dt;s.y+=s.vy*dt;s.life-=dt;if(blocked(s.x,s.y,s.r))s.life=0;let targets=s.owner===player?foes:[player];for(let t of targets){if(s.life>0&&Math.hypot(s.x-t.x,s.y-t.y)<s.r+t.r){s.life=0;t.hp-=s.damage;burst(s.x,s.y,s.owner===player?'#8ee8ff':'#ff9a83',5);if(t===player){player.inv=.12}else if(t.hp<=0){score++;burst(t.x,t.y,'#ffdb86',18);foes.splice(foes.indexOf(t),1);spawnClock=0}break}}}
 shots=shots.filter(s=>s.life>0);for(let p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;p.vx*=.97;p.vy*=.97}particles=particles.filter(p=>p.life>0);
 spawnClock+=dt;if(foes.length<3&&spawnClock>1.5){spawnFoe();spawnClock=0}
-if(player.hp<=0){finish('ПОРАЖЕНИЕ','Боты одержали верх. Попробуй ещё раз!')}else if(score>=10){finish('ПОБЕДА!','Отличный бой! Ты набрал 10 очков.')}else if(elapsed>=120){finish(score>=5?'ХОРОШИЙ БОЙ':'МАТЧ ОКОНЧЕН','Твой результат: '+score+' очков.')}
+if(socket&&socket.readyState===1&&performance.now()-lastNet>65){socket.send(JSON.stringify({type:'state',x:player.x,y:player.y,hp:player.hp,score,angle:player.angle}));lastNet=performance.now()}\nif(player.hp<=0){finish('ПОРАЖЕНИЕ','Боты одержали верх. Попробуй ещё раз!')}else if(score>=10){finish('ПОБЕДА!','Отличный бой! Ты набрал 10 очков.')}else if(elapsed>=120){finish(score>=5?'ХОРОШИЙ БОЙ':'МАТЧ ОКОНЧЕН','Твой результат: '+score+' очков.')}
 hud()}
 function finish(title,msg){running=false;$('message').innerHTML='<b>'+title+'</b><br>'+msg;$('start').textContent='ИГРАТЬ СНОВА';$('overlay').style.display='grid'}
 function roundRect(x,y,w,h,r,color){ctx.fillStyle=color;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}
@@ -63,7 +63,7 @@ ctx.strokeStyle='#a8d6bd22';ctx.lineWidth=3;ctx.strokeRect(18,18,W-36,H-36);
 for(let b of walls){roundRect(b.x,b.y+7,b.w,b.h,12,'#142f39');roundRect(b.x,b.y,b.w,b.h,12,'#6d8d78');roundRect(b.x+6,b.y+6,b.w-12,b.h-12,8,'#557568')}
 for(let s of shots){ctx.fillStyle=s.owner===player?'#b6f1ff':'#ff9d83';ctx.shadowColor=ctx.fillStyle;ctx.shadowBlur=14;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0}
 for(let p of particles){ctx.globalAlpha=clamp(p.life*2,0,1);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;
-for(let f of foes)drawFighter(f,'#ff796e','#722f45');if(player)drawFighter(player,'#72d8ff','#225b9b');
+for(let f of foes)drawFighter(f,'#ff796e','#722f45');for(const [id,r] of remotePlayers){if(id!==myId){drawFighter(r,'#b99aff','#57418d');ctx.fillStyle='#fff';ctx.font='12px system-ui';ctx.textAlign='center';ctx.fillText(r.name||'Игрок',r.x,r.y-40)}}if(player)drawFighter(player,'#72d8ff','#225b9b');
 }
 function drawFighter(o,main,dark){ctx.save();ctx.translate(o.x,o.y);ctx.rotate(o.angle);ctx.fillStyle='#07121b66';ctx.beginPath();ctx.ellipse(0,13,21,10,0,0,Math.PI*2);ctx.fill();ctx.fillStyle=dark;ctx.fillRect(0,-7,31,14);ctx.fillStyle=main;ctx.beginPath();ctx.arc(0,0,o.r,0,Math.PI*2);ctx.fill();ctx.fillStyle='#f5fbff';ctx.beginPath();ctx.arc(6,-6,5,0,Math.PI*2);ctx.fill();ctx.fillStyle='#14202a';ctx.beginPath();ctx.arc(8,-6,2,0,Math.PI*2);ctx.fill();ctx.restore();
 ctx.fillStyle='#101b25';ctx.fillRect(o.x-21,o.y-31,42,5);ctx.fillStyle=o===player?'#7ce1ff':'#ff8b79';ctx.fillRect(o.x-21,o.y-31,42*clamp(o.hp/(o===player?100:60),0,1),5)}
@@ -76,6 +76,6 @@ $('fire').addEventListener('pointerdown',e=>{fireHeld=true;e.preventDefault()});
 const stick=$('stick'),nub=$('nub');let active=false;
 stick.addEventListener('pointerdown',e=>{active=true;stick.setPointerCapture(e.pointerId);joy(e)});stick.addEventListener('pointermove',e=>{if(active)joy(e)});stick.addEventListener('pointerup',()=>{active=false;joystick={x:0,y:0};nub.style.transform='translate(0,0)'});stick.addEventListener('pointercancel',()=>{active=false;joystick={x:0,y:0};nub.style.transform='translate(0,0)'});
 function joy(e){let r=stick.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2),len=Math.hypot(dx,dy),scale=Math.min(1,30/(len||1));joystick={x:dx*scale/30,y:dy*scale/30};nub.style.transform='translate('+dx*scale+'px,'+dy*scale+'px)'}
-reset();draw();requestAnimationFrame(frame);
+function connectOnline(){const proto=location.protocol==='https:'?'wss:':'ws:';try{socket=new WebSocket(proto+'//'+location.host+'/ws');socket.onopen=()=>{$('netstatus').textContent='● Онлайн-соединение установлено';netReady=true};socket.onmessage=e=>{let m;try{m=JSON.parse(e.data)}catch{return}if(m.type==='joined'){myId=m.id;$('netstatus').textContent='● Комната '+m.room+' · '+m.players+'/2 игроков'}if(m.type==='state'){for(const p of m.players){if(p.id!==myId)remotePlayers.set(p.id,p);else $('netstatus').textContent='● Онлайн · '+m.room+' · '+m.players.length+'/2'}}if(m.type==='notice')$('netstatus').textContent=m.text};socket.onclose=()=>{$('netstatus').textContent='○ Онлайн недоступен · локальная тренировка';netReady=false};socket.onerror=()=>{$('netstatus').textContent='○ Ошибка онлайн-соединения'}}catch(e){$('netstatus').textContent='○ Локальная тренировка'}}\nconnectOnline();reset();draw();requestAnimationFrame(frame);
 })();
 </script></body></html>
