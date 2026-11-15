@@ -1,12 +1,9 @@
 {
   "name": "sablox",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "SABLOX game platform prototype",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "engines": {
-    "node": ">=18"
-  }
+  "description": "SABLOX multiplayer game platform",
+  "scripts": {"start":"node server.js"},
+  "dependencies": {"ws":"^8.18.0"},
+  "engines": {"node":">=18"}
 }
