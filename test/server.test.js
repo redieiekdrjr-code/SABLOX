@@ -76,7 +76,7 @@ test('two players join the same room and receive state updates', async () => {
   const joinedB = await waitForMessage(b, m => m.type === 'joined');
   assert.equal(joinedA.room, joinedB.room);
   const statePromise = waitForMessage(b, m => m.type === 'state' && m.players.some(p => p.id === joinedA.id));
-  a.send(JSON.stringify({ type: 'state', x: 300, y: 200, hp: 1, score: 999 }));
+  a.send(JSON.stringify({ type: 'state', x: 300, y: 200 }));
   const state = await statePromise;
   const first = state.players.find(p => p.id === joinedA.id);
   assert.equal(first.x, 300);
