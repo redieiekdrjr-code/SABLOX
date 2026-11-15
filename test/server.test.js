@@ -72,6 +72,10 @@ test('game catalogue and homepage are served', async () => {
   assert.match(await arena.text(), /НАЧАТЬ БОЙ/);
   const manifest = await fetch(base + '/manifest.webmanifest');
   assert.equal(manifest.status, 200);
+  assert.match(manifest.headers.get('content-type') || '', /application\/manifest\+json/);
+  const icon = await fetch(base + '/icon.svg');
+  assert.equal(icon.status, 200);
+  assert.match(icon.headers.get('content-type') || '', /image\/svg\+xml/);
 });
 
 test('two players join the same room and receive state updates', async () => {
