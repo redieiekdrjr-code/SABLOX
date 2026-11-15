@@ -58,7 +58,10 @@ wss.on('connection',ws=>{
       player.x=number(msg.x,player.x,35,925);
       player.y=number(msg.y,player.y,35,505);
       player.angle=number(msg.angle,player.angle,-Math.PI*2,Math.PI*2);
-      // Health and score are intentionally not accepted from movement packets.
+      // The arena currently simulates bot damage on the client, so bounded HP/score
+      // values are synchronized here. PvP hit damage itself is applied by the server.
+      player.hp=number(msg.hp,player.hp,0,100);
+      player.score=number(msg.score,player.score,0,999);
       broadcast(room);
     }
     if(msg.type==='hit'&&typeof msg.target==='string'){
