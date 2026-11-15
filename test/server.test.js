@@ -77,6 +77,8 @@ test('game catalogue and homepage are served', async () => {
   assert.match(arenaHtml, /kind==='tank'/);
   assert.match(arenaHtml, /kind==='scout'/);
   assert.match(arenaHtml, /id="enemies"/);
+  assert.match(arenaHtml, /owner\.heroId==='vanguard'/);
+  assert.match(arenaHtml, /player\.heroId==='runner'/);
   const manifest = await fetch(base + '/manifest.webmanifest');
   assert.equal(manifest.status, 200);
   assert.match(manifest.headers.get('content-type') || '', /application\/manifest\+json/);
