@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><link rel="manifest" href="/manifest.webmanifest"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#10131b"><title>SABLOX — Играй и создавай</title>
 <style>
 :root{color-scheme:dark;--bg:#10131b;--panel:#191e2a;--muted:#9ba6b8;--text:#f5f7fb}
@@ -38,4 +38,4 @@ document.getElementById('search').addEventListener('input',e=>{const q=e.target.
 async function checkServer(){const status=document.getElementById('status'),dot=document.getElementById('dot');try{const r=await fetch('/api/health',{cache:'no-store'});if(!r.ok)throw Error('offline');const j=await r.json();if(j.status!=='ok')throw Error('offline');status.textContent='Сервер подключён';dot.style.background='#5bd58b';document.getElementById('lock').textContent='✓ Соединение с сервером установлено.'}catch(e){status.textContent='Сервер отключён';dot.style.background='#ed6464'}}
 render();checkServer();setInterval(checkServer,15000);
 </script>
-</body></html>
+<script>if('serviceWorker' in navigator&&location.protocol==='https:'){navigator.serviceWorker.register('/sw.js').catch(()=>{})}</script></body></html>
