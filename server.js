@@ -31,7 +31,7 @@ const server = http.createServer((req,res) => {
 });
 const wss = new WebSocketServer({server,path:'/ws',maxPayload:2048});
 function send(ws,data){if(ws.readyState===1)ws.send(JSON.stringify(data))}
-function snapshot(room){return {type:'state',room:room.id,players:[...room.players.values()].map(p=>({id:p.id,name:p.name,x:p.x,y:p.y,hp:p.hp,score:p.score,angle:p.angle}))}}
+function snapshot(room){return {type:'state',room:room.id,players:[...room.players.values()].map(p=>({id:p.id,name:p.name,x:p.x,y:p.y,r:18,hp:p.hp,score:p.score,angle:p.angle}))}}
 function broadcast(room){const data=snapshot(room);for(const p of room.players.values())send(p.ws,data)}
 function remove(ws){
   const p=clients.get(ws);if(!p)return;clients.delete(ws);
