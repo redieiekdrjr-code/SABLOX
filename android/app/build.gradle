@@ -1,0 +1,25 @@
+plugins {
+    id 'com.android.application'
+}
+
+def sabloxServerUrl = System.getenv("SABLOX_SERVER_URL") ?: "https://sablox.bonto.run"
+
+android {
+    namespace 'com.sablox.game'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.sablox.game'
+        minSdk 23
+        targetSdk 35
+        versionCode 1
+        versionName '0.5.0'
+        buildConfigField 'String', 'SERVER_URL', '"' + sabloxServerUrl.replace('"', '\\"') + '"'
+    }
+
+    buildFeatures { buildConfig true }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
