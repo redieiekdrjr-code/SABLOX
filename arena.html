@@ -11,7 +11,7 @@ header{height:58px;flex:none;display:flex;align-items:center;justify-content:spa
 #hud{display:flex;gap:14px;align-items:center;font-weight:800;font-size:13px}.pill{padding:7px 11px;border-radius:9px;background:#ffffff12;border:1px solid #ffffff16}
 #stage{position:relative;flex:1;min-height:0;display:grid;place-items:center;padding:10px}
 canvas{display:block;width:min(100%,1100px);height:auto;max-height:100%;aspect-ratio:16/9;border-radius:14px;border:1px solid #ffffff25;box-shadow:0 20px 70px #0008;background:#1c3440;object-fit:contain}
-#overlay{position:absolute;inset:0;display:block;background:linear-gradient(135deg,#09a9ec,#16d8ec 52%,#0785d5);border-radius:14px;z-index:3;overflow:hidden;color:#fff}
+#app.menu-open #controls{display:none}#overlay{position:absolute;inset:0;display:block;background:linear-gradient(135deg,#09a9ec,#16d8ec 52%,#0785d5);border-radius:14px;z-index:3;overflow:hidden;color:#fff}
 .lobby{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 53%,#9dfaff 0,#36d8f1 34%,#08a4e9 75%,#0878cb 100%);font-weight:900;text-shadow:0 2px 2px #071d3d88}
 .lobby:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,#ffffff08 0 2px,transparent 2px 9px);pointer-events:none}
 .top-left,.top-right{position:absolute;top:1.5%;display:flex;gap:8px;align-items:stretch}.top-left{left:1.5%}.top-right{right:1.5%}
@@ -56,7 +56,7 @@ button{border:0;cursor:pointer;font-weight:900}
 @media(orientation:landscape) and (max-height:520px){header{height:42px;padding:0 12px}#stage{padding:4px}canvas{width:auto;height:100%;max-width:100%;max-height:100%;aspect-ratio:16/9}#controls{height:82px;padding:0 16px;gap:12px}#stick,#fire,#dash,#super{width:68px;height:68px}#nub{left:15px;top:15px}#overlay{inset:4px}.panel{padding:12px 20px;width:min(440px,80%)}.panel h1{font-size:30px}.panel p{margin:5px 0}.panel select{padding:7px;margin-bottom:6px}button{padding:9px 14px}}@media(max-width:560px){header{height:50px;padding:0 10px}#hud{gap:5px;font-size:11px}.pill{padding:6px 7px}#stage{padding:5px}#overlay{inset:5px}#controls{height:106px;padding:0 18px}.hint{font-size:10px}}
 </style>
 </head>
-<body><div id="app">
+<body><div id="app" class="menu-open">
 <header><div><div class="brand">SABLOX <b>ARENA</b></div><div class="sub" id="netstatus">2D • арена SABLOX</div></div><div id="hud"><span class="pill">❤ <span id="hp">100</span></span><span class="pill">★ <span id="score">0</span>/10</span><span class="pill">☠ <span id="enemies">3</span></span><span class="pill">⏱ <span id="time">02:00</span></span></div></header>
 <main id="stage"><canvas id="game" width="960" height="540" aria-label="Игровая арена"></canvas>
 <div id="overlay"><div class="lobby">
@@ -101,7 +101,7 @@ spawnClock+=dt;if(foes.length<3&&spawnClock>1.5){spawnFoe();spawnClock=0}
 if(socket&&socket.readyState===1&&performance.now()-lastNet>65){socket.send(JSON.stringify({type:'state',x:player.x,y:player.y,hp:player.hp,score,angle:player.angle}));lastNet=performance.now()}
 if(player.hp<=0){finish('ПОРАЖЕНИЕ','Боты одержали верх. Попробуй ещё раз!')}else if($('modeSelect').value!=='training'&&score>=10){finish('ПОБЕДА!','Отличный бой! Ты набрал 10 очков.')}else if($('modeSelect').value!=='training'&&elapsed>=120){finish(score>=5?'ХОРОШИЙ БОЙ':'МАТЧ ОКОНЧЕН','Твой результат: '+score+' очков.')}
 hud()}
-function finish(title,msg){running=false;$('message').innerHTML='<b>'+title+'</b><br>'+msg;$('start').textContent='ИГРАТЬ СНОВА';$('overlay').style.display='grid'}
+function finish(title,msg){running=false;$('message').innerHTML='<b>'+title+'</b><br>'+msg;$('start').textContent='ИГРАТЬ СНОВА';$('overlay').style.display='grid';$('app').classList.add('menu-open');toast(title+' · '+msg)}
 function roundRect(x,y,w,h,r,color){ctx.fillStyle=color;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}
 function draw(){ctx.clearRect(0,0,W,H);const palette=activeMap==='foundry'?['#4b5157','#6b747b']:activeMap==='ruins'?['#806443','#b18a55']:['#244b4b','#2d5b56'];ctx.fillStyle=palette[0];ctx.fillRect(0,0,W,H);
 ctx.fillStyle=palette[1];for(let y=20;y<H;y+=40)for(let x=20;x<W;x+=40){ctx.globalAlpha=.12;ctx.beginPath();ctx.arc(x,y,2,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;
@@ -114,7 +114,7 @@ for(let f of foes){const colors=f.kind==='tank'?['#f2a45e','#86502e']:f.kind==='
 function drawFighter(o,main,dark){ctx.save();ctx.translate(o.x,o.y);ctx.rotate(o.angle);ctx.fillStyle='#07121b66';ctx.beginPath();ctx.ellipse(0,13,21,10,0,0,Math.PI*2);ctx.fill();ctx.fillStyle=dark;ctx.fillRect(0,-7,31,14);ctx.fillStyle=main;ctx.beginPath();ctx.arc(0,0,o.r,0,Math.PI*2);ctx.fill();ctx.fillStyle='#f5fbff';ctx.beginPath();ctx.arc(6,-6,5,0,Math.PI*2);ctx.fill();ctx.fillStyle='#14202a';ctx.beginPath();ctx.arc(8,-6,2,0,Math.PI*2);ctx.fill();ctx.restore();
 ctx.fillStyle='#101b25';ctx.fillRect(o.x-21,o.y-31,42,5);ctx.fillStyle=o===player?'#7ce1ff':'#ff8b79';ctx.fillRect(o.x-21,o.y-31,42*clamp(o.hp/(o===player||remotePlayers.has(o.id)?100:(o.maxHp||60)),0,1),5)}
 function frame(t){let dt=Math.min(.033,(t-last)/1000||0);last=t;if(running)update(dt);draw();requestAnimationFrame(frame)}
-$('start').onclick=()=>{reset();running=true;last=performance.now();$('overlay').style.display='none'};
+$('start').onclick=()=>{reset();running=true;last=performance.now();$('overlay').style.display='none';$('app').classList.remove('menu-open')};
 const heroOrder=['ranger','vanguard','runner'],heroNames=['РЕЙНДЖЕР','ТАНК','СКАУТ'];let heroIndex=0,modeIndex=0;
 $('changeFighter').onclick=()=>{heroIndex=(heroIndex+1)%heroOrder.length;$('heroSelect').value=heroOrder[heroIndex];$('fighterTrophies').textContent=45+heroIndex*10;toast('Выбран боец: '+heroNames[heroIndex])};
 $('modeCard').onclick=()=>{modeIndex=(modeIndex+1)%2;$('modeSelect').value=modeIndex?'training':'showdown';$('modeName').textContent=modeIndex?'ТРЕНИРОВКА':'SOLO SHOWDOWN';$('modeDesc').textContent=modeIndex?'Без ограничения времени':'Выживи и победи!'};
