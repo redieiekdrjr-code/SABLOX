@@ -11,11 +11,42 @@ header{height:58px;flex:none;display:flex;align-items:center;justify-content:spa
 #hud{display:flex;gap:14px;align-items:center;font-weight:800;font-size:13px}.pill{padding:7px 11px;border-radius:9px;background:#ffffff12;border:1px solid #ffffff16}
 #stage{position:relative;flex:1;min-height:0;display:grid;place-items:center;padding:10px}
 canvas{display:block;width:min(100%,1100px);height:auto;max-height:100%;aspect-ratio:16/9;border-radius:14px;border:1px solid #ffffff25;box-shadow:0 20px 70px #0008;background:#1c3440;object-fit:contain}
-#overlay{position:absolute;inset:10px;display:grid;place-items:center;background:#08101bd9;border-radius:14px;z-index:3}
-.panel{width:min(440px,92%);padding:26px;border:1px solid #ffffff22;border-radius:18px;background:linear-gradient(145deg,#263c5d,#172337);box-shadow:0 20px 60px #0009;text-align:center}
-.panel h1{font-size:clamp(30px,7vw,48px);margin:0 0 6px;letter-spacing:-2px}.panel p{color:#c1cde0;line-height:1.5}
-button{border:0;border-radius:11px;padding:13px 20px;background:#58c8f2;color:#082032;font-weight:900;font-size:15px;cursor:pointer}select{width:100%;padding:12px;border-radius:10px;background:#101d2d;color:#fff;border:1px solid #ffffff35;font:inherit;margin-bottom:14px}
-.secondary{background:#ffffff18;color:#fff;border:1px solid #ffffff22;margin-left:7px}
+#overlay{position:absolute;inset:0;display:block;background:linear-gradient(135deg,#09a9ec,#16d8ec 52%,#0785d5);border-radius:14px;z-index:3;overflow:hidden;color:#fff}
+.lobby{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 53%,#9dfaff 0,#36d8f1 34%,#08a4e9 75%,#0878cb 100%);font-weight:900;text-shadow:0 2px 2px #071d3d88}
+.lobby:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,#ffffff08 0 2px,transparent 2px 9px);pointer-events:none}
+.top-left,.top-right{position:absolute;top:1.5%;display:flex;gap:8px;align-items:stretch}.top-left{left:1.5%}.top-right{right:1.5%}
+.profile,.trophybar,.currency,.menu-btn,.side-btn,.pass-card,.mode-card,.play-btn,.fighter-tag{border:3px solid #101b35;border-radius:8px;box-shadow:0 4px 0 #07152a88,0 7px 12px #001a3b55;background:linear-gradient(#344d78,#1c2e50);color:white}
+.profile{width:104px;display:grid;place-items:center;font-size:12px;padding:5px}.profile .face{font-size:31px;background:#55c7ef;border:3px solid #111c36;border-radius:8px;padding:3px 13px}
+.trophybar{width:210px;display:flex;align-items:center;justify-content:space-around;padding:7px;background:linear-gradient(#35476c,#192b4c);font-size:19px;color:#ffd54b}.trophybar small{font-size:10px;color:#dbe9ff}
+.top-right{align-items:center}.currency{padding:8px 11px;min-width:75px;text-align:center;font-size:14px}.currency.gold{color:#ffdf4c}.currency.gem{color:#80ff8d}.menu-btn{font-size:23px;padding:5px 14px}
+.side-stack{position:absolute;top:35%;display:grid;gap:9px;width:100px}.side-stack.left{left:1.5%}.side-stack.right{right:1.5%}
+.side-btn{height:51px;padding:5px 4px;font-size:12px;display:flex;align-items:center;justify-content:center;gap:5px;background:linear-gradient(#405b87,#1b2e50);cursor:pointer}
+.side-btn span{font-size:21px}.side-btn:active,.menu-btn:active{transform:translateY(2px)}
+.fighter-area{position:absolute;left:50%;top:16%;transform:translateX(-50%);width:34%;height:61%;display:grid;place-items:center}
+.fighter-tag{position:absolute;top:0;display:flex;align-items:center;gap:8px;padding:5px 12px;color:#ffdc52;font-size:14px}
+.mascot{position:relative;width:150px;height:255px;filter:drop-shadow(0 9px 3px #00395a66);transform:scale(var(--fighter-scale,1))}
+.mascot .hair{position:absolute;left:33px;top:8px;width:90px;height:86px;border-radius:48% 48% 38% 38%;background:radial-gradient(circle at 35% 20%,#e7a4ff,#8a35d7 68%,#5022a0);z-index:3}
+.mascot .hair:before,.mascot .hair:after{content:"";position:absolute;background:#a64ce8;border-radius:50%;width:52px;height:55px;top:29px}.mascot .hair:before{left:-20px}.mascot .hair:after{right:-19px}
+.mascot .head{position:absolute;left:49px;top:55px;width:61px;height:69px;border-radius:43% 43% 48% 48%;background:linear-gradient(120deg,#f6b37c,#b96945);z-index:4}
+.mascot .brow{position:absolute;top:20px;left:8px;width:18px;height:5px;background:#55284d;border-radius:5px;transform:rotate(-8deg)}.mascot .brow.r{left:36px;transform:rotate(8deg)}
+.mascot .eye{position:absolute;top:29px;left:13px;width:9px;height:13px;border-radius:50%;background:#fff}.mascot .eye.r{left:39px}.mascot .pupil{position:absolute;inset:3px 2px 2px;background:#25354b;border-radius:50%}
+.mascot .body{position:absolute;left:38px;top:119px;width:78px;height:83px;background:linear-gradient(90deg,#7b55d8,#b28aff);border-radius:24px 24px 14px 14px;z-index:2}
+.mascot .scarf{position:absolute;left:30px;top:126px;width:91px;height:48px;background:linear-gradient(120deg,#ffe45b,#ff9d23);clip-path:polygon(0 0,100% 0,75% 100%,34% 75%);z-index:5}
+.mascot .leg{position:absolute;top:188px;width:31px;height:66px;background:linear-gradient(90deg,#344b9a,#1b2862);border-radius:9px 9px 5px 5px;z-index:1}.mascot .leg.l{left:43px;transform:rotate(5deg)}.mascot .leg.r{left:82px;transform:rotate(-4deg)}
+.mascot .boot{position:absolute;top:239px;width:44px;height:15px;background:#182552;border-radius:10px;z-index:2}.mascot .boot.l{left:32px}.mascot .boot.r{left:78px}
+.mascot .blaster{position:absolute;left:4px;top:46px;width:29px;height:99px;border-radius:8px;background:linear-gradient(90deg,#5b493f,#c8793b,#382b39);border:5px solid #29324b;transform:rotate(-9deg);z-index:2}
+.change-fighter{position:absolute;left:calc(50% + 125px);top:46%;background:#ffffff3b;border:2px solid #ffffffa0;border-radius:10px;color:white;font-size:24px;width:46px;height:46px;padding:0}
+.pass-card{position:absolute;left:1.5%;bottom:2%;width:27%;height:19%;padding:8px;background:linear-gradient(#ffd93e,#f7a900);color:#fff;text-shadow:0 2px #754500}
+.pass-title{font-size:17px;color:#fff}.progress{height:16px;background:#25334b;border:2px solid #121e34;border-radius:20px;margin-top:9px;overflow:hidden}.progress i{display:block;width:34%;height:100%;background:linear-gradient(#fff26a,#ff9d25)}
+.mode-card{position:absolute;left:50%;bottom:2%;transform:translateX(-50%);width:35%;height:19%;padding:10px 12px;display:flex;align-items:center;gap:12px;background:linear-gradient(#263c63,#142441);cursor:pointer}
+.mode-icon{font-size:30px;background:#fff;color:#263c63;border-radius:50%;padding:7px}.mode-name{font-size:16px}.mode-desc{font-size:11px;color:#8df45e}
+.play-btn{position:absolute;right:1.5%;bottom:2%;width:24%;height:19%;font-size:clamp(20px,3vw,36px);background:linear-gradient(#ffe94a,#ffb900);color:#fff;text-shadow:0 3px #9c5700;border:4px solid #15203a;cursor:pointer}
+.hidden-selects{display:none}
+.lobby-toast{position:absolute;left:50%;top:13%;transform:translateX(-50%);padding:8px 14px;background:#172c4cdd;border:2px solid #ffffff55;border-radius:10px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}.lobby-toast.show{opacity:1}
+button{border:0;cursor:pointer;font-weight:900}
+@media(max-height:430px){.side-stack{top:29%;gap:5px;width:85px}.side-btn{height:39px;font-size:10px}.fighter-area{top:14%;height:65%}.mascot{transform:scale(.78)}.pass-card,.mode-card,.play-btn{height:17%;bottom:1.5%}.pass-title{font-size:13px}.top-left,.top-right{gap:4px}.profile{width:78px}.trophybar{width:150px}.currency{padding:5px;min-width:55px}.change-fighter{left:calc(50% + 105px)}}
+@media(max-width:650px){.side-stack{width:75px}.side-btn{font-size:9px;height:43px}.side-btn span{font-size:17px}.profile{width:65px;font-size:9px}.profile .face{font-size:22px}.trophybar{width:120px;font-size:14px}.currency{min-width:42px;padding:5px;font-size:11px}.top-right{gap:3px}.fighter-area{width:40%}.mascot{transform:scale(.75)}.pass-card{width:29%}.mode-card{width:37%;gap:5px;padding:5px}.mode-name{font-size:11px}.mode-desc{font-size:9px}.play-btn{width:23%}.change-fighter{left:calc(50% + 95px);width:36px;height:36px}}
+
 #controls{height:112px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 max(20px,calc((100vw - 900px)/2));gap:20px}
 .hint{font-size:12px;color:#9fb1c9;text-align:center;flex:1}
 #stick{width:88px;height:88px;border-radius:50%;background:#ffffff13;border:2px solid #ffffff35;position:relative;flex:none}
@@ -28,7 +59,19 @@ button{border:0;border-radius:11px;padding:13px 20px;background:#58c8f2;color:#0
 <body><div id="app">
 <header><div><div class="brand">SABLOX <b>ARENA</b></div><div class="sub" id="netstatus">2D • арена SABLOX</div></div><div id="hud"><span class="pill">❤ <span id="hp">100</span></span><span class="pill">★ <span id="score">0</span>/10</span><span class="pill">☠ <span id="enemies">3</span></span><span class="pill">⏱ <span id="time">02:00</span></span></div></header>
 <main id="stage"><canvas id="game" width="960" height="540" aria-label="Игровая арена"></canvas>
-<div id="overlay"><div class="panel"><h1>SABLOX <span style="color:#76d6ff">ARENA</span></h1><p id="message">Выбери бойца, победи ботов и набери 10 очков за матч.</p><label for="heroSelect" style="display:block;text-align:left;font-size:12px;color:#b9c9dc;margin:14px 0 6px">ТВОЙ БОЕЦ</label><select id="heroSelect"><option value="ranger">Рейнджер — баланс</option><option value="vanguard">Танк — ударная волна</option><option value="runner">Скаут — длинный рывок</option></select><label for="modeSelect" style="display:block;text-align:left;font-size:12px;color:#b9c9dc;margin:4px 0 6px">РЕЖИМ</label><select id="modeSelect"><option value="showdown">Выживание — 10 очков</option><option value="training">Тренировка</option></select><label for="mapSelect" style="display:block;text-align:left;font-size:12px;color:#b9c9dc;margin:4px 0 6px">КАРТА</label><select id="mapSelect"><option value="grove">Зелёная роща</option><option value="foundry">Старая фабрика</option><option value="ruins">Песчаные руины</option></select><button id="start">НАЧАТЬ БОЙ</button></div></div></main>
+<div id="overlay"><div class="lobby">
+<div class="top-left"><button class="profile lobby-action" data-label="Профиль"><div class="face">☠</div><small>SABLOX ID</small></button><div class="trophybar">🏆 <span id="trophyCount">45</span><small>ПРОГРЕСС</small></div></div>
+<div class="top-right"><div class="currency gold">🪙 168</div><div class="currency gem">💎 0</div><div class="currency">🟢 0</div><button class="menu-btn lobby-action" data-label="Настройки">☰</button></div>
+<div class="side-stack left"><button class="side-btn lobby-action" data-label="События"><span>🎟️</span> СОБЫТИЯ</button><button class="side-btn lobby-action" data-label="Награды"><span>🎁</span> НАГРАДЫ</button><button class="side-btn lobby-action" data-label="Задания"><span>📋</span> ЗАДАНИЯ</button></div>
+<div class="side-stack right"><button class="side-btn lobby-action" data-label="Магазин"><span>🛒</span> МАГАЗИН</button><button class="side-btn lobby-action" data-label="Клуб"><span>🛡️</span> КЛУБ</button><button class="side-btn lobby-action" data-label="Чат"><span>💬</span> ЧАТ</button></div>
+<div class="fighter-area"><div class="fighter-tag">📦 <span id="fighterTrophies">45</span> 🏅 2</div><div class="mascot"><div class="blaster"></div><div class="hair"></div><div class="head"><i class="brow"></i><i class="brow r"></i><i class="eye"><i class="pupil"></i></i><i class="eye r"><i class="pupil"></i></i></div><div class="body"></div><div class="scarf"></div><div class="leg l"></div><div class="leg r"></div><div class="boot l"></div><div class="boot r"></div></div></div>
+<button class="change-fighter" id="changeFighter" aria-label="Сменить бойца">＋</button>
+<div class="pass-card"><div class="pass-title">🎫 SABLOX PASS</div><div class="progress"><i></i></div><small>УРОВЕНЬ 3 · 34 / 100</small></div>
+<div class="mode-card" id="modeCard"><div class="mode-icon">☠</div><div><div class="mode-name" id="modeName">SOLO SHOWDOWN</div><div class="mode-desc" id="modeDesc">Выживи и победи!</div></div></div>
+<button class="play-btn" id="start">ИГРАТЬ</button>
+<div class="lobby-toast" id="lobbyToast"></div>
+<div class="hidden-selects"><select id="heroSelect"><option value="ranger">Рейнджер</option><option value="vanguard">Танк</option><option value="runner">Скаут</option></select><select id="modeSelect"><option value="showdown">Выживание</option><option value="training">Тренировка</option></select><select id="mapSelect"><option value="grove">Роща</option><option value="foundry">Фабрика</option><option value="ruins">Руины</option></select><div id="message">Выбери бойца</div></div>
+</div></div></main>
 <footer id="controls"><div id="stick"><div id="nub"></div></div><div class="hint">На ПК: WASD — движение · мышь — прицел · Space — атака · Shift — рывок · E — супер</div><button id="super">СУПЕР</button><button id="dash">РЫВОК</button><button id="fire">АТАКА</button></footer>
 </div>
 <script>
@@ -72,6 +115,11 @@ function drawFighter(o,main,dark){ctx.save();ctx.translate(o.x,o.y);ctx.rotate(o
 ctx.fillStyle='#101b25';ctx.fillRect(o.x-21,o.y-31,42,5);ctx.fillStyle=o===player?'#7ce1ff':'#ff8b79';ctx.fillRect(o.x-21,o.y-31,42*clamp(o.hp/(o===player||remotePlayers.has(o.id)?100:(o.maxHp||60)),0,1),5)}
 function frame(t){let dt=Math.min(.033,(t-last)/1000||0);last=t;if(running)update(dt);draw();requestAnimationFrame(frame)}
 $('start').onclick=()=>{reset();running=true;last=performance.now();$('overlay').style.display='none'};
+const heroOrder=['ranger','vanguard','runner'],heroNames=['РЕЙНДЖЕР','ТАНК','СКАУТ'];let heroIndex=0,modeIndex=0;
+$('changeFighter').onclick=()=>{heroIndex=(heroIndex+1)%heroOrder.length;$('heroSelect').value=heroOrder[heroIndex];$('fighterTrophies').textContent=45+heroIndex*10;toast('Выбран боец: '+heroNames[heroIndex])};
+$('modeCard').onclick=()=>{modeIndex=(modeIndex+1)%2;$('modeSelect').value=modeIndex?'training':'showdown';$('modeName').textContent=modeIndex?'ТРЕНИРОВКА':'SOLO SHOWDOWN';$('modeDesc').textContent=modeIndex?'Без ограничения времени':'Выживи и победи!'};
+function toast(t){const el=$('lobbyToast');el.textContent=t;el.classList.add('show');clearTimeout(window.__sabloxToast);window.__sabloxToast=setTimeout(()=>el.classList.remove('show'),1600)}
+document.querySelectorAll('.lobby-action').forEach(b=>b.addEventListener('click',()=>toast(b.dataset.label+' — скоро откроется')));
 c.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'){let r=c.getBoundingClientRect();aim.x=(e.clientX-r.left)*W/r.width;aim.y=(e.clientY-r.top)*H/r.height}});
 c.addEventListener('pointerdown',e=>{let r=c.getBoundingClientRect();aim.x=(e.clientX-r.left)*W/r.width;aim.y=(e.clientY-r.top)*H/r.height;if(e.pointerType==='mouse')mouseDown=true});window.addEventListener('pointerup',()=>mouseDown=false);
 window.addEventListener('keydown',e=>{if(e.code==='ShiftLeft'||e.code==='ShiftRight')dashQueued=true;if(e.code==='KeyE')superQueued=true;keys[e.code]=true;if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault()});window.addEventListener('keyup',e=>keys[e.code]=false);
