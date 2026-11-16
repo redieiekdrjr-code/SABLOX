@@ -1,16 +1,18 @@
-# SABLOX 0.5.0
+# SABLOX Arena 0.6.0
 
-SABLOX is an original browser-based 2D arena prototype with a small Node.js/WebSocket server.
+SABLOX is an original horizontal, top-down 2D arena game inspired by the fast matches and readable combat of hero-brawler games. It is a standalone game project — not a user-generated-world platform.
 
-## Current playable build
+## Playable prototype
 
-- Three selectable fighters: Ranger, Vanguard and Runner, with different movement, weapons and dash abilities.
-- Top-down arena with walls, projectiles, hit effects, health bars, score target and a two-minute round.
-- Three bot archetypes: slow heavy tank, fast scout and balanced raider.
-- Keyboard/mouse controls and touch joystick, attack and dash controls.
-- Mobile auto-aim against the nearest bot and visible dash cooldown.
+- Landscape 16:9 arena with touch controls for movement, attack and dash.
+- Three selectable original fighters: Ranger, Vanguard and Runner.
+- Different movement speeds, weapon damage, firing rates and dash abilities.
+- Bot opponents with tank, scout and raider archetypes.
+- Walls, projectiles, hit effects, health bars, score target and two-minute rounds.
+- Keyboard/mouse support and mobile auto-aim.
 - Basic WebSocket room presence and player-to-player hit handling.
-- Installable PWA shell over HTTPS with an offline app shell and custom icon.
+- Android WebView wrapper configured for landscape orientation.
+- Installable PWA with landscape display preference.
 
 ## Run locally
 
@@ -21,7 +23,7 @@ npm install
 npm start
 ```
 
-Open http://localhost:3000. Health endpoint: http://localhost:3000/api/health.
+Open http://localhost:3000. The root URL opens the game directly. Health endpoint: http://localhost:3000/api/health.
 
 ## Tests
 
@@ -33,8 +35,8 @@ GitHub Actions runs the test suite on pushes to `main` and pull requests.
 
 ## Deploy
 
-The repository includes a Render Blueprint in `render.yaml`. Create a Blueprint from this repository in Render. The service listens on the platform-provided `PORT` and uses `/api/health` as its health check. Render currently reports that payment information is required before it will plan this service.
+The server listens on the platform-provided `PORT` and serves the game and WebSocket endpoint `/ws`. Configure the Android build variable `SABLOX_SERVER_URL` to the deployed server URL before building the APK.
 
 ## Honest project status
 
-This is a playable prototype, not a finished Brawl Stars clone. The online layer currently provides basic room presence and simple PvP hit messages; it does not yet have production-grade matchmaking, authoritative movement/combat simulation, accounts, progression, or a native Android APK. The browser game can be installed as a PWA on supported Android browsers. All art and game code in this repository are original prototype work.
+This is a playable prototype, not a finished commercial brawler. The online layer currently provides basic room presence and simple PvP hit messages; production-grade matchmaking, authoritative movement/combat simulation, accounts, progression, polished original character art, multiple maps and full 3v3 gameplay remain future work. All game code and art are original prototype work.
