@@ -99,11 +99,13 @@ test('game catalogue and homepage are served', async () => {
 
 test('two players join the same room and receive state updates', async () => {
   const a = new WebSocket('ws://127.0.0.1:' + port + '/ws');
+  const joinedAPromise = waitForMessage(a, m => m.type === 'joined');
   await new Promise((resolve, reject) => { a.once('open', resolve); a.once('error', reject); });
-  const joinedA = await waitForMessage(a, m => m.type === 'joined');
+  const joinedA = await joinedAPromise;
   const b = new WebSocket('ws://127.0.0.1:' + port + '/ws');
+  const joinedBPromise = waitForMessage(b, m => m.type === 'joined');
   await new Promise((resolve, reject) => { b.once('open', resolve); b.once('error', reject); });
-  const joinedB = await waitForMessage(b, m => m.type === 'joined');
+  const joinedB = await joinedBPromise;
   assert.equal(joinedA.room, joinedB.room);
   const statePromise = waitForMessage(b, m => m.type === 'state' && m.players.some(p => p.id === joinedA.id));
   a.send(JSON.stringify({ type: 'state', x: 300, y: 200 }));
