@@ -58,7 +58,7 @@ test('health endpoint reports the running service', async () => {
   const body = await response.json();
   assert.equal(body.status, 'ok');
   assert.equal(body.service, 'SABLOX');
-  assert.equal(body.version, '0.5.0');
+  assert.equal(body.version, '0.6.0');
 });
 
 test('game catalogue and homepage are served', async () => {
@@ -78,7 +78,7 @@ test('game catalogue and homepage are served', async () => {
   assert.match(arenaHtml, /kind==='scout'/);
   assert.match(arenaHtml, /id="enemies"/);
   assert.match(arenaHtml, /owner\.heroId==='vanguard'/);
-  assert.match(arenaHtml, /player\.heroId==='runner'/);
+  assert.match(arenaHtml, /player\.heroId==='runner'/);\n  assert.match(arenaHtml, /const maps=\\{grove:/);\n  assert.match(arenaHtml, /superCharge>=100/);\n  assert.match(arenaHtml, /modeSelect/);\n  assert.match(arenaHtml, /orientation:landscape/);
   const manifest = await fetch(base + '/manifest.webmanifest');
   assert.equal(manifest.status, 200);
   assert.match(manifest.headers.get('content-type') || '', /application\/manifest\+json/);
