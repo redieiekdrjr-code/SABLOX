@@ -20,7 +20,7 @@ const server = http.createServer((req,res) => {
     res.writeHead(200, {'Content-Type':'application/json','Cache-Control':'no-store'});
     return res.end(JSON.stringify({games:[{id:'arena',name:'SABLOX Arena',mode:'online-1v1',status:'playable'}]}));
   }
-  const requested = url.pathname === '/' ? 'index.html' : decodeURIComponent(url.pathname).replace(/^\\/+/, '');
+  const requested = url.pathname === '/' ? 'index.html' : decodeURIComponent(url.pathname).replace(/^\/+/, '');
   const file = path.resolve(root, requested);
   if (!file.startsWith(root + path.sep)) { res.writeHead(403); return res.end('Forbidden'); }
   fs.readFile(file, (err,data) => {
