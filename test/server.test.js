@@ -78,7 +78,11 @@ test('game catalogue and homepage are served', async () => {
   assert.match(arenaHtml, /kind==='scout'/);
   assert.match(arenaHtml, /id="enemies"/);
   assert.match(arenaHtml, /owner\.heroId==='vanguard'/);
-  assert.match(arenaHtml, /player\.heroId==='runner'/);\n  assert.match(arenaHtml, /const maps=\\{grove:/);\n  assert.match(arenaHtml, /superCharge>=100/);\n  assert.match(arenaHtml, /modeSelect/);\n  assert.match(arenaHtml, /orientation:landscape/);
+  assert.match(arenaHtml, /player\.heroId==='runner'/);
+  assert.ok(arenaHtml.includes('const maps={grove:'));
+  assert.ok(arenaHtml.includes('superCharge>=100'));
+  assert.ok(arenaHtml.includes('modeSelect'));
+  assert.ok(arenaHtml.includes('orientation:landscape'));
   const manifest = await fetch(base + '/manifest.webmanifest');
   assert.equal(manifest.status, 200);
   assert.match(manifest.headers.get('content-type') || '', /application\/manifest\+json/);
