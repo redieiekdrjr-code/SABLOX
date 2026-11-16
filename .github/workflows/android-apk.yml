@@ -1,4 +1,5 @@
 name: Build SABLOX Android APK
+# Rebuild after fixing the arena JavaScript syntax.
 
 on:
   workflow_dispatch:
